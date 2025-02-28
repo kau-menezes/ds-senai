@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+main {
+    font-family: 'Segoe UI';
+    font-weight: 500;
+    color: rgb(25,25,25);
+}
