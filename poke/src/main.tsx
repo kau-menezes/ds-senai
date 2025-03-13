@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 
 import "./styles/reset.css"
 
-import MainRoutes from './routes/MainRoutes'
+import MainRoutes from '../../pokeApiProject/src/routes/MainRoutes'
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
