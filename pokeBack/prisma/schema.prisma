@@ -1,0 +1,33 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Pokemon {
+  id             Int              @id @unique
+  name           String
+  trainers       Trainer[]        @relation("TrainerPokemon")
+  TrainerPokemon TrainerPokemon[]
+}
+
+model Trainer {
+  id             Int              @id @unique @default(autoincrement())
+  name           String
+  email          String           @unique
+  password       String
+  pokemon        Pokemon[]        @relation("TrainerPokemon")
+  TrainerPokemon TrainerPokemon[]
+}
+
+model TrainerPokemon {
+  trainerId Int
+  pokemonId Int
+  trainer   Trainer @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  pokemon   Pokemon @relation(fields: [pokemonId], references: [id], onDelete: Cascade)
+
+  @@id([trainerId, pokemonId]) 
+}
