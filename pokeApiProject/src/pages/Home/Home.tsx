@@ -10,6 +10,7 @@ const PAGE_SIZE = 14;
 const MAX_POKEMONS = 1025;
 
 import pokeTypeColor from "../../data/types.json";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function Home() {
 
@@ -20,6 +21,7 @@ export default function Home() {
   const [page, setPage] = useState<number>(Number(query.get("page")) || 1);
 
   const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isCatching, setIsCatching] = useState(false);
   const [selectedPokemon, setSelectedPokemon] = useState<WholePokemon | null>(null);
 
   const handlePageChange = (value: number) => {
@@ -67,12 +69,15 @@ export default function Home() {
   const capture = async () => {
     if (!selectedPokemon) return;
 
+    setIsCatching(true);
+
     try {
       const trainerId = localStorage.getItem("id"); // Get trainer ID from localStorage
       if (!trainerId) {
         toast.error("Trainer ID not found! Please log in.");
         return;
       }
+
 
       console.log(selectedPokemon.id);
       console.log(typeof (selectedPokemon.id));
@@ -89,14 +94,22 @@ export default function Home() {
         }),
       });
 
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      setIsCatching(false);
+
+
       if (!response.ok) {
         throw new Error("Failed to capture Pokémon");
+
+
       }
+
 
       const data = await response.json();
       toast.success(data.message || "Pokémon captured successfully!");
 
       closeModal(); // Close the modal after capturing
+
     } catch (error: any) {
       toast.error(error.message || "An error occurred while capturing Pokémon.");
     }
@@ -123,6 +136,22 @@ export default function Home() {
                     className="mx-auto w-50 h-auto"
                   />
                 </div>
+
+                <AnimatePresence>
+                  {isCatching && (
+                    <motion.img
+                      src="src/assets/pokeball.jpg"
+                      className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-20"
+                      initial={{ y: -100, opacity: 1, x: 350 }}  // Start from below the screen
+                      animate={{ y: -620, opacity: 1, x:350 }} // Move up to the Pokémon
+                      exit={{ opacity: 0, scale: 0.5 }} // Fade out after 2 seconds
+                      transition={{
+                        y: { duration: 0.8, ease: "easeInOut" }, // Movement duration
+                        opacity: { delay: 2, duration: 0.5 } // Stay for 2s, then fade out
+                      }}
+                    />
+                  )}
+                </AnimatePresence>
 
                 <div className="w-full !py-8 !pl-2">
                   <h2 className="text-lg font-semibold capitalize">{selectedPokemon.name}</h2>
