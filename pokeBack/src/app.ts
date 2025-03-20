@@ -1,13 +1,16 @@
 import express from 'express';
-import { capturePokemon, getTrainerTeam } from './controllers/pokemon.controller';
+import "express-async-errors";
+import { capturePokemon, getTrainerTeam } from './controller/pokemonController';
+import { loginController, registerController } from './controller/authController';
+import authenticate from './middlewares/validate.middleware';
 
 const app = express();
 app.use(express.json());
 
-app.post('/capture', capturePokemon);  // Capture Pokémon route
-app.get('/team/:trainerId', getTrainerTeam);  // Get trainer's team route
+app.post('/login', loginController);
+app.post('/register', registerController);
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
-});
--
+app.post('/capture', authenticate, capturePokemon);
+app.get('/team', authenticate, getTrainerTeam);
+
+export default app;
