@@ -1,5 +1,5 @@
 import { captureDTO } from "../interface/dto/pokemon/pokemon.dto";
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 import AppError from '../errors/AppError';
 
 const prisma = new PrismaClient();
@@ -8,6 +8,10 @@ export default class PokemonService {
 
   // Capture a Pokémon and assign it to a Trainer
   async capture(data: captureDTO) {
+
+    console.log(data);
+    
+
     const { trainerId, pokemonId } = data;
 
     try {
@@ -68,19 +72,24 @@ export default class PokemonService {
       const trainerWithPokemons = await prisma.trainer.findUnique({
         where: { id: trainerId },
         include: {
-          pokemon: true, 
+          TrainerPokemon: {
+            include: {
+              pokemon: true, // Isso traz os Pokémon associados ao treinador
+            },
+          },
         },
       });
-      console.log(trainerWithPokemons)
 
       if (!trainerWithPokemons) {
         throw new Error("Trainer not found");
       }
 
-      return trainerWithPokemons.pokemon; // Return the list of Pokémon
+      // Retorna apenas os Pokémon do treinador
+      return trainerWithPokemons.TrainerPokemon.map((tp: any) => tp.pokemon);
     } catch (error) {
-      const err = error as AppError;
-      throw new Error(`Error fetching trainer's team: ${err.message}`);
+      console.error("Error fetching trainer's team:", error);
+      throw new Error("Could not fetch trainer's team");
     }
   }
+  
 }

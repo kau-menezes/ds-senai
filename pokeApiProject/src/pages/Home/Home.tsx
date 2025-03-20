@@ -1,15 +1,20 @@
 import { useState, useEffect, useCallback } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { PokemonProps } from "./interfaces/PokemonProps";
 import PokeCard from "./components/PokeCard";
 import { WholePokemon } from "./interfaces/WholePokemon";
+import { ToastContainer, toast } from 'react-toastify';
 
-const PAGE_SIZE = 15;
+
+const PAGE_SIZE = 14;
 const MAX_POKEMONS = 1025;
 
 import pokeTypeColor from "../../data/types.json";
 
 export default function Home() {
+
+  const navigate = useNavigate();
+
   const [pokemons, setPokemons] = useState<WholePokemon[]>([]);
   const [query, setQuery] = useSearchParams();
   const [page, setPage] = useState<number>(Number(query.get("page")) || 1);
@@ -59,15 +64,54 @@ export default function Home() {
     setSelectedPokemon(null);
   };
 
+  const capture = async () => {
+    if (!selectedPokemon) return;
+
+    try {
+      const trainerId = localStorage.getItem("id"); // Get trainer ID from localStorage
+      if (!trainerId) {
+        toast.error("Trainer ID not found! Please log in.");
+        return;
+      }
+
+      console.log(selectedPokemon.id);
+      console.log(typeof(selectedPokemon.id));
+      
+
+      const response = await fetch("http://localhost:8080/capture", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          trainerId: trainerId,
+          pokemonId: selectedPokemon.id,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to capture Pokémon");
+      }
+
+      const data = await response.json();
+      toast.success(data.message || "Pokémon captured successfully!");
+
+      closeModal(); // Close the modal after capturing
+    } catch (error: any) {
+      toast.error(error.message || "An error occurred while capturing Pokémon.");
+    }
+  };
+
+
   return (
-    <div className="flex flex-col items-center gap-5 p-5 bg-gray-200">
+    <div className="flex flex-col items-center gap-2 p-5 bg-gray-200 min-h-screen">
       {isModalOpen && selectedPokemon && (
         <div className="fixed inset-0 bg-blue bg-opacity-50 flex justify-end">
           <div className="w-1/2 bg-white p-6 overflow-y-auto">
             <button onClick={closeModal} className="absolute top-4 right-4 text-2xl hover:cursor-pointer">
               &times;
             </button>
-            <div className="w-full flex items-center justify-center">
+            <div className="w-full flex flex-col gap-4 items-center justify-center">
               <div className="flex flex-col items-center rounded-lg shadow-md font-exo cursor-pointer w-[280px] h-auto overflow-hidden">
                 <div className="bg-gray-300 w-full h-[220px] flex justify-center items-center">
                   <img
@@ -96,17 +140,29 @@ export default function Home() {
                   </div>
                 </div>
               </div>
+              <button
+                className="bg-blue-400 text-white font-bold rounded-2xl w-[100px] p-1 hover:bg-blue-500 hover:cursor-pointer"
+                onClick={capture} 
+              >
+                Capture!
+              </button>
+
             </div>
           </div>
         </div>
       )}
+
 
       <img
         src="/assets/poke-logo.png"
         alt="Pokemon Logo"
         className="w-75 !my-10"
       />
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mt-10">
+      <div className="flex gap-4">
+        <button className="bg-amber-400 text-white font-bold rounded-2xl w-[100px] p-1 hover:bg-amber-500 hover:cursor-pointer">All</button>
+        <button className="bg-blue-400 text-white font-bold rounded-2xl w-[100px] p-1 hover:bg-blue-500 hover:cursor-pointer" onClick={() => {navigate("/team")}}>My team</button>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-8 xl:grid-cols-7 gap-4 mt-10">
         {pokemons.map((pokemon, index) => (
           <PokeCard
             key={index}
@@ -135,6 +191,7 @@ export default function Home() {
           <span className="material-icons text-black hover:cursor-pointer">chevron_right</span>
         </button>
       </div>
+      <ToastContainer />
     </div>
   );
 }

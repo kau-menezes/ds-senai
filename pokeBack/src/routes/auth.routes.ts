@@ -1,10 +1,9 @@
-import express from 'express';
-import 
+// import express from 'express';
+// import { AuthController } from '../controller/authController';
+// const route = express.Router();
 
+// // Use the controllers for the routes
+// route.post('/register', AuthController.registerController );  // Register route
+// route.post('/login', AuthController.loginController);        // Login route
 
-const route = express.Router();
-
-route.post('/register', AuthController.register);
-route.post('/login', AuthController.login);
-
-export default route;
+// export default route;

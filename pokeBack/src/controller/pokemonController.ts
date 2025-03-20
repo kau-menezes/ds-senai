@@ -19,7 +19,7 @@ export const capturePokemon = async (req: Request, res: Response) => {
 
 export const getTrainerTeam = async (req: Request, res: Response) => {
   try {
-    const trainerId = parseInt(res.locals.userId, 10); 
+    const trainerId = parseInt(req.params.userId); 
     const team = await PokemonService.team(trainerId);
     res.status(200).json({ data: team });
   } catch (error) {

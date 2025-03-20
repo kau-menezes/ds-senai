@@ -28,13 +28,20 @@ export default class AuthService {
             process.env.JWT_SECRET_KEY as string
         );
     
-        return { token };
+        return { id: trainer.id };
     }
 
     async register({ email, password, name }: IRegisterPayload) {
+
+        console.log("oioioooi");
+        
+        
         const existingTrainer = await prisma.trainer.findUnique({
             where: { email }
         });
+
+        console.log(existingTrainer);
+        
 
         if (existingTrainer) {
             throw new AppError('Trainer already exists', 400);

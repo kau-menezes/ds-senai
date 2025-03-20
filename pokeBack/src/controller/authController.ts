@@ -4,22 +4,28 @@ import AppError from '../errors/AppError';
 
 const authService = new AuthService();
 
-export const loginController = async (req: Request, res: Response) => {
-    try {
-        const { token } = await authService.login(req.body);
-        res.json({ token });
-    } catch (error) {
-        const err = error as AppError;
-        res.status(err.statusCode || 500).json({ message: err.message });
-    }
-};
+export class AuthController {
 
-export const registerController = async (req: Request, res: Response) => {
-    try {
-        const { newTrainer } = await authService.register(req.body);
-        res.status(201).json({ newTrainer });
-    } catch (error) {
-        const err = error as AppError;
-        res.status(err.statusCode || 500).json({ message: err.message });
-    }
-};
+    static loginController = async (req: Request, res: Response) => {
+
+
+        try {
+            const id = await authService.login(req.body);
+            res.json({ id });
+        } catch (error) {
+            const err = error as AppError;
+            res.status(err.statusCode || 500).json({ message: err.message });
+        }
+    };
+    
+    static registerController = async (req: Request, res: Response) => {
+        try {
+            const { newTrainer } = await authService.register(req.body);
+            res.status(201).json({ newTrainer });
+        } catch (error) {
+            const err = error as AppError;
+            res.status(err.statusCode || 500).json({ message: err.message });
+        }
+    };
+}
+

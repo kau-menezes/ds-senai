@@ -1,16 +1,27 @@
 import express from 'express';
-import "express-async-errors";
+import cors from "cors";
+import "express-async-errors";  
 import { capturePokemon, getTrainerTeam } from './controller/pokemonController';
-import { loginController, registerController } from './controller/authController';
 import authenticate from './middlewares/validate.middleware';
+import { AuthController } from './controller/authController';
 
 const app = express();
 app.use(express.json());
 
-app.post('/login', loginController);
-app.post('/register', registerController);
+app.use(cors({
+    origin: '*',              
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],  
+    allowedHeaders: ['Content-Type', 'Authorization'],  
+    credentials: true          
+}));
 
-app.post('/capture', authenticate, capturePokemon);
-app.get('/team', authenticate, getTrainerTeam);
+
+app.post('/login', AuthController.loginController);
+app.post('/register', AuthController.registerController);
+
+app.post('/capture', capturePokemon);
+app.get('/team/:userId', getTrainerTeam);
+
+app.options('*', cors()); // Allow preflight for all routes
 
 export default app;

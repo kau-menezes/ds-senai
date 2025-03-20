@@ -6,10 +6,17 @@
 
 @import "tailwindcss";
 * {
-  margin: 0;
-  padding: 0;
+
   box-sizing: border-box;
 }
+
+/* Add this to your global styles or index.css */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 
 ul, ol {
   list-style: none;

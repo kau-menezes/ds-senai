@@ -1,5 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "../pages/Home/Home.tsx";
+import Login from "../pages/Login/Login.tsx";
+import Team from "../pages/Team/Team.tsx";
 
 export default function MainRoutes() {
 
@@ -8,11 +10,15 @@ export default function MainRoutes() {
             router={createBrowserRouter([
                 {
                     path: "/",
+                    element: <Login/>
+                },
+                {
+                    path: "/home",
                     element: <Home/>
                 },
                 {
-                    path: "/p/:name",
-                    element: <p/>
+                    path: "/team",
+                    element: <Team/>
                 },
             ])}
         />
