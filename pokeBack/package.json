@@ -4,6 +4,7 @@
   "description": "pokemon backend for senai's project",
   "main": "index.js",
   "scripts": {
+    "dev": "ts-node-dev --rs --cls --ignore-watch node_modules src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -11,18 +12,20 @@
   "devDependencies": {
     "@prisma/client": "^6.5.0",
     "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.13.10",
     "prisma": "^6.5.0",
+    "ts-node-dev": "^2.0.0",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2"
   },
   "dependencies": {
-    "@types/express": "^5.0.0",
     "axios": "^1.8.3",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "express": "^4.21.2",
+    "express-async-errors": "^3.1.1",
     "jsonwebtoken": "^9.0.2"
   }
 }
