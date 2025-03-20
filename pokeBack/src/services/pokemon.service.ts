@@ -1,7 +1,6 @@
-import { Request, Response } from 'express';
-import { captureDTO } from "../interface/dto/pokemon/pokemon.dto.ts";
+import { captureDTO } from "../interface/dto/pokemon/pokemon.dto";
 import { PrismaClient } from '@prisma/client';
-import AppError from '../errors/AppError.ts';
+import AppError from '../errors/AppError';
 
 const prisma = new PrismaClient();
 
@@ -18,7 +17,7 @@ export default class PokemonService {
       });
 
       if (!pokemonExists) {
-        throw new Error("Pokémon not found");
+        await prisma.pokemon.create({ data: { id: pokemonId } })
       }
 
       // Check if the Trainer exists
@@ -44,6 +43,11 @@ export default class PokemonService {
         throw new Error("This Pokémon is already assigned to this trainer");
       }
 
+      const randomNumber = Math.floor(Math.random() * 5);
+      if(randomNumber < 4) {
+        throw new Error("Could not get pokémon, try again!")
+      }
+
       // Create the relationship in the join table
       const trainerPokemon = await prisma.trainerPokemon.create({
         data: {
@@ -54,21 +58,20 @@ export default class PokemonService {
 
       return trainerPokemon;
     } catch (error) {
-        const err = error as AppError;
+      const err = error as AppError;
       throw new Error(`Error capturing Pokémon: ${err.message}`);
     }
   }
 
-  // Get all Pokémon assigned to a Trainer (Team)
   static async team(trainerId: number) {
     try {
-      // Fetch the trainer and include all related Pokémon
       const trainerWithPokemons = await prisma.trainer.findUnique({
         where: { id: trainerId },
         include: {
-          pokemon: true, // This will fetch all Pokémon assigned to the trainer
+          pokemon: true, 
         },
       });
+      console.log(trainerWithPokemons)
 
       if (!trainerWithPokemons) {
         throw new Error("Trainer not found");
@@ -76,8 +79,8 @@ export default class PokemonService {
 
       return trainerWithPokemons.pokemon; // Return the list of Pokémon
     } catch (error) {
-        const err = error as AppError;
-        throw new Error(`Error fetching trainer's team: ${err.message}`);
+      const err = error as AppError;
+      throw new Error(`Error fetching trainer's team: ${err.message}`);
     }
   }
 }
