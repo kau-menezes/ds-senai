@@ -9,7 +9,6 @@ generator client {
 
 model Pokemon {
   id             Int              @id @unique
-  name           String
   trainers       Trainer[]        @relation("TrainerPokemon")
   TrainerPokemon TrainerPokemon[]
 }
