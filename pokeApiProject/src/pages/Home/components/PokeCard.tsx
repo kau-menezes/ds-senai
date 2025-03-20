@@ -3,7 +3,8 @@ import { WholePokemon } from '../interfaces/WholePokemon';
 import pokeTypeColor from "../../../data/types.json";
 
 const PokeCard: React.FC<{ pokemon: WholePokemon, onClick: (pokemon: WholePokemon) => void }> = ({ pokemon, onClick }) => {
-  const id = pokemon.url.split("/").slice(-2, -1)[0];
+  const id = pokemon.url ? pokemon.url.split("/").slice(-2, -1)[0] : pokemon.id;
+
   const name = pokemon.name;
   const types = pokemon.types.map((type) => type.type.name);
 

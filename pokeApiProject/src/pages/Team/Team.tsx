@@ -19,11 +19,13 @@ export default function Team() {
         if (!response.ok) throw new Error("Failed to fetch team");
 
         const data = await response.json();
-        const pokemonIds = data.data.map((p: { pokemonId: number }) => p.pokemonId);
+        const pokemonIds = data.data.map((p: { id: number }) => p.id);
 
         // Fetch detailed Pokémon data from PokeAPI
         const detailedPokemons = await Promise.all(
           pokemonIds.map(async (id: number) => {
+            console.log(id);
+            
             const pokeResponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
             return await pokeResponse.json();
           })
@@ -46,7 +48,7 @@ export default function Team() {
       <div className="flex gap-4">
         <button 
           className="bg-amber-400 text-white font-bold rounded-2xl w-[100px] p-1 hover:bg-amber-500 hover:cursor-pointer"
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/home")}
         >
           All
         </button>

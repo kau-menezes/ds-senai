@@ -75,8 +75,8 @@ export default function Home() {
       }
 
       console.log(selectedPokemon.id);
-      console.log(typeof(selectedPokemon.id));
-      
+      console.log(typeof (selectedPokemon.id));
+
 
       const response = await fetch("http://localhost:8080/capture", {
         method: "POST",
@@ -84,7 +84,7 @@ export default function Home() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          trainerId: trainerId,
+          trainerId: parseInt(trainerId),
           pokemonId: selectedPokemon.id,
         }),
       });
@@ -113,13 +113,17 @@ export default function Home() {
             </button>
             <div className="w-full flex flex-col gap-4 items-center justify-center">
               <div className="flex flex-col items-center rounded-lg shadow-md font-exo cursor-pointer w-[280px] h-auto overflow-hidden">
-                <div className="bg-gray-300 w-full h-[220px] flex justify-center items-center">
+                <div
+                  className="w-full h-[320px] flex justify-center items-center bg-cover bg-center"
+                  style={{ backgroundImage: `url('src/assets/poke-background.jpg')` }}
+                >
                   <img
-                    src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${selectedPokemon.id}.png`}
+                    src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${selectedPokemon.id}.png`}
                     alt={selectedPokemon.name}
-                    className="mx-auto bg-gray-300 w-50 h-auto"
+                    className="mx-auto w-50 h-auto"
                   />
                 </div>
+
                 <div className="w-full !py-8 !pl-2">
                   <h2 className="text-lg font-semibold capitalize">{selectedPokemon.name}</h2>
                   <div className="mt-4">
@@ -142,7 +146,7 @@ export default function Home() {
               </div>
               <button
                 className="bg-blue-400 text-white font-bold rounded-2xl w-[100px] p-1 hover:bg-blue-500 hover:cursor-pointer"
-                onClick={capture} 
+                onClick={capture}
               >
                 Capture!
               </button>
@@ -160,7 +164,7 @@ export default function Home() {
       />
       <div className="flex gap-4">
         <button className="bg-amber-400 text-white font-bold rounded-2xl w-[100px] p-1 hover:bg-amber-500 hover:cursor-pointer">All</button>
-        <button className="bg-blue-400 text-white font-bold rounded-2xl w-[100px] p-1 hover:bg-blue-500 hover:cursor-pointer" onClick={() => {navigate("/team")}}>My team</button>
+        <button className="bg-blue-400 text-white font-bold rounded-2xl w-[100px] p-1 hover:bg-blue-500 hover:cursor-pointer" onClick={() => { navigate("/team") }}>My team</button>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-8 xl:grid-cols-7 gap-4 mt-10">
         {pokemons.map((pokemon, index) => (
