@@ -1,8 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import AppError from '../errors/AppError';
-import { sign } from 'jsonwebtoken';
 import { ILoginPayload, IRegisterPayload } from '../interface/dto/auth/auth.dto';
+import { sign } from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 
@@ -23,9 +23,8 @@ export default class AuthService {
         if (!isPasswordValid) {
             throw new AppError('Invalid credentials', 401);
         }
-    
         const token = sign(
-            { id: trainer.id, name: trainer.name }, 
+            { userId: trainer.id }, 
             process.env.JWT_SECRET_KEY as string
         );
     
@@ -49,12 +48,6 @@ export default class AuthService {
                 name
             }
         });
-
-        const token = sign(
-            { id: newTrainer.id, name: newTrainer.name },
-            process.env.JWT_SECRET_KEY as string,
-            { expiresIn: '1h' }
-        );
 
         return { newTrainer };
     }
